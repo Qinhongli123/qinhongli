@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料：Skill</title>
+<style>
+  :root{
+    --primary:#059669; --primary-light:#ecfdf5; --text:#1f2937;
+    --muted:#6b7280; --line:#e5e7eb; --bg:#f8fafc; --card:#ffffff;
+    --green:#059669; --green-light:#ecfdf5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.8;}
+  .container{max-width:860px;margin:0 auto;padding:24px 16px 64px;}
+  header.hero{background:linear-gradient(135deg,#059669,#047857);color:#fff;border-radius:16px;padding:32px 24px;margin-bottom:24px;}
+  header.hero .tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 14px;font-size:.85rem;margin-bottom:12px;}
+  header.hero h1{font-size:1.9rem;margin-bottom:8px;}
+  header.hero p{opacity:.92;}
+  nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:20px;}
+  nav.breadcrumb a{color:var(--primary);text-decoration:none;}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px;}
+  h2{font-size:1.25rem;color:var(--primary);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  h2 .num{background:var(--primary);color:#fff;width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;flex:none;}
+  .plain{background:var(--primary-light);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .plain b{color:var(--primary);}
+  .formal{background:#f9fafb;border-radius:8px;padding:14px 16px;font-size:.95rem;color:var(--muted);}
+  .formal b{color:var(--text);}
+  .mech{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+  .mech .item{border:1px solid var(--line);border-radius:10px;padding:14px;}
+  .mech .item h3{font-size:1rem;margin-bottom:6px;}
+  .mech .item p{font-size:.9rem;color:var(--muted);}
+  .case{background:var(--green-light);border-left:4px solid var(--green);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .case b{color:var(--green);}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--primary-light);color:var(--primary);}
+  tr:nth-child(even) td{background:#fafffe;}
+  details{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px;background:#fff;}
+  details summary{cursor:pointer;font-weight:600;}
+  details[open]{border-color:var(--primary);}
+  details .ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);color:var(--muted);font-size:.93rem;}
+  ol.refs{padding-left:20px;font-size:.9rem;color:var(--muted);}
+  ol.refs li{margin-bottom:6px;}
+  ol.refs a{color:var(--primary);word-break:break-all;}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:32px;}
+  pre.code{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:16px;font-size:.82rem;overflow-x:auto;line-height:1.6;font-family:ui-monospace,Consolas,monospace;}
+  pre.code .c{color:#64748b;} pre.code .k{color:#7dd3fc;} pre.code .v{color:#fbbf24;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="hero">
+    <span class="tag">概念学习资料 · 三</span>
+    <h1>Skill（AI 技能包）</h1>
+    <p>一句话理解：<b>一份写给 AI 看的"岗位说明书 + 操作手册"——用结构化文件告诉 AI：你有哪些新本事、什么时候该用、具体怎么一步步做。</b></p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="../concept-relationship.html">🏠 概念关系图</a> ·
+    <a href="agent.html">Agent</a> ·
+    <a href="llm-context.html">大模型的上下文</a> ·
+    <a href="skill.html"><b>Skill</b></a>
+  </nav>
+
+  <section>
+    <h2><span class="num">1</span>概念定义</h2>
+    <div class="plain"><b>大白话版：</b>你新招了一个聪明但啥都不懂的实习生（大模型/Agent），与其每次干活前口头交代一遍流程，不如写一份《新员工操作手册》放进他的工位。Skill 就是这份手册：把某项能力的<b>触发条件、使用流程、注意事项</b>写成一个标准文件（如 SKILL.md），AI 每次要干活时先读手册再动手。</div>
+    <div class="formal"><b>规范定义：</b>Skill 是一种<b>声明式描述的 AI 能力扩展单元</b>：以结构化文件（典型如 SKILL.md，含 YAML 元信息 + Markdown 正文）定义能力的名称、适用场景、输入输出约定与执行步骤，由 AI 平台在<b>匹配到适用场景时按需加载</b>，从而在不修改模型本体的情况下赋予模型新的、可复用的、行为稳定的专业能力。</div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>核心机制</h2>
+    <div class="mech">
+      <div class="item"><h3>📄 声明式描述</h3><p>用一份文件说清"我是什么、何时用、怎么用"。元信息（名称、描述、版本）供平台检索匹配；正文（流程、规范、示例）供模型执行时阅读。</p></div>
+      <div class="item"><h3>⚡ 按需加载</h3><p>平时不占用上下文窗口；只有当用户请求命中技能的适用场景时，才把 SKILL.md 注入上下文。既扩展了能力，又不浪费宝贵的窗口空间。</p></div>
+      <div class="item"><h3>🔌 输入输出约定</h3><p>明确规定调用时需要哪些输入（如概念名、专业背景）、产出什么（如六模块 HTML 学习资料）。约定越清晰，AI 的输出越稳定。</p></div>
+      <div class="item"><h3>📦 可分享、可版本化</h3><p>Skill 本质是文件夹+文件，天然适合用 Git 管理、分享复用。别人 clone 下来放进自己的 skills 目录就能用。</p></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:14px">本作业自建的 concept-learning Skill 的 SKILL.md 开头长这样：</p>
+    <pre class="code"><span class="c">---</span>
+<span class="k">name:</span> <span class="v">concept-learning</span>
+<span class="k">description:</span> <span class="v">个人概念学习资料生成 Skill。输入一个不熟悉的领域概念，生成包含六个模块的结构化学习资料（HTML）。</span>
+<span class="k">version:</span> <span class="v">1.0.0</span>
+<span class="k">author:</span> <span class="v">覃宏丽（Qinhongli123）</span>
+<span class="c">---</span>
+<span class="c"># 以下正文：适用场景 / 输入信息 / 生成步骤 / 输出结构 / 资料来源 / 自检要求</span></pre>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>应用案例（广告学视角）</h2>
+    <div class="case">
+      <b>案例：本作业本身就是一次 Skill 实践</b><br>
+      我把"生成概念学习资料"这件事做成了 concept-learning Skill：固定六模块产出结构（定义→机制→案例→辨析→自测→来源）、固定自检清单。以后再遇到任何新概念（比如"计算广告""归因模型"），不需要重新设计资料框架，直接调用这个 Skill，产出的资料结构始终统一、质量可控。
+    </div>
+    <div class="case">
+      <b>案例：团队的"提案 PPT 风格" Skill</b><br>
+      广告公司可以把提案 PPT 的制作规范（公司模板、字体、页数结构、必含的分析框架）写成一个 Skill，分享给全组。从此让 AI 生成提案初稿时，人人产出的 PPT 骨架都符合公司标准——把"老带新口口相传的经验"沉淀成了"可复制的组织资产"。
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>概念辨析：Skill ≠ 工具 ≠ 提示词模板</h2>
+    <table>
+      <tr><th>对比维度</th><th>工具（Tool）</th><th>提示词模板（Prompt）</th><th>Skill（技能包）</th></tr>
+      <tr><td>本质</td><td>一段可被调用的程序/接口</td><td>一段写好的指令文本</td><td>结构化的能力描述文件（说明+流程+资源）</td></tr>
+      <tr><td>谁来执行</td><td>外部程序执行，AI 只发起调用</td><td>AI 按文本模仿</td><td>AI 读完后<b>指挥自己+组合工具</b>执行</td></tr>
+      <tr><td>加载方式</td><td>预先接入、常驻可用</td><td>每次手动粘贴进对话</td><td>平台按场景<b>自动匹配、按需加载</b></td></tr>
+      <tr><td>可组合性</td><td>单一功能点</td><td>孤立片段</td><td>可包含流程、示例、附属资料，还能调用工具</td></tr>
+      <tr><td>广告类比</td><td>设计软件里的某个功能</td><td>便利贴上的提醒</td><td>标准作业流程 SOP 手册</td></tr>
+    </table>
+    <div class="formal" style="margin-top:12px"><b>三者关系一句话：</b>Skill 是"会用工具的成套方法"——一份 Skill 可以指挥 AI 在合适时机调用多个工具，远比单个工具或一段提示词更接近"专业能力"。</div>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span>自测问题（点击展开参考答案）</h2>
+    <details>
+      <summary>Q1：为什么 Skill 采用"按需加载"而不是"常驻上下文"？</summary>
+      <div class="ans">上下文窗口是稀缺资源（详见第二篇）。技能库可能有几十上百个 Skill，全部常驻会挤占窗口、降低性能还增加成本。按需加载让平台平时只保留技能的"名称+描述"用于匹配，命中场景后才加载完整说明，实现能力扩展与窗口占用的平衡。</div>
+    </details>
+    <details>
+      <summary>Q2：SKILL.md 里的 YAML 头部（name/description）和 Markdown 正文，分别写给"谁"看？</summary>
+      <div class="ans">YAML 头部主要写给<b>平台/系统</b>看：用于检索、匹配用户请求该不该触发这个 Skill；Markdown 正文写给<b>模型</b>看：触发后模型要照着它执行具体流程。一个管"要不要用"，一个管"怎么用"。</div>
+    </details>
+    <details>
+      <summary>Q3：把同一个"写小红书文案"的需求分别做成提示词模板和 Skill，最大的区别是什么？</summary>
+      <div class="ans">提示词模板需要你<b>记得主动粘贴</b>，且只能覆盖单一场景；Skill 由平台<b>自动识别场景触发</b>，还可以包含多步流程、自检清单、附属资料（字体、示例、禁用词表），产出更稳定。模板是"给模型的便签"，Skill 是"给模型的制度"。</div>
+    </details>
+    <details>
+      <summary>Q4：Skill 与 Agent 是什么关系？</summary>
+      <div class="ans">Agent 是"会自主干活的执行者"，Skill 是"执行者掌握的成套方法"。Agent 的能力天花板之一就是它掌握多少高质量 Skill：同一个 Agent，装上"提案 PPT Skill"就能做提案，装上"舆情监测 Skill"就能做监测。Skill 是 Agent 能力的模块化扩展（详见概念关系图）。</div>
+    </details>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span>参考来源</h2>
+    <ol class="refs">
+      <li>Anthropic，《Agent Skills / Equipping agents for the real world with Agent Skills》（2025）— <a href="https://www.anthropic.com">anthropic.com</a></li>
+      <li>CodeBuddy（腾讯云代码助手）Skills 机制说明 — <a href="https://codebuddy.ai">codebuddy.ai</a></li>
+      <li>OpenAI，GPTs / Custom Instructions 的能力扩展机制（同类思想参考）— <a href="https://platform.openai.com/docs">platform.openai.com/docs</a></li>
+    </ol>
+  </section>
+
+  <footer>概念学习资料 · 由 concept-learning Skill 生成，经覃宏丽核对修改 · 2026-09</footer>
+</div>
+</body>
+</html>

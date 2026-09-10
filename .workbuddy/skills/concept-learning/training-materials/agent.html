@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料：Agent</title>
+<style>
+  :root{
+    --primary:#2563eb; --primary-light:#eff6ff; --text:#1f2937;
+    --muted:#6b7280; --line:#e5e7eb; --bg:#f8fafc; --card:#ffffff;
+    --green:#059669; --green-light:#ecfdf5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.8;}
+  .container{max-width:860px;margin:0 auto;padding:24px 16px 64px;}
+  header.hero{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;border-radius:16px;padding:32px 24px;margin-bottom:24px;}
+  header.hero .tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 14px;font-size:.85rem;margin-bottom:12px;}
+  header.hero h1{font-size:1.9rem;margin-bottom:8px;}
+  header.hero p{opacity:.92;}
+  nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:20px;}
+  nav.breadcrumb a{color:var(--primary);text-decoration:none;}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px;}
+  h2{font-size:1.25rem;color:var(--primary);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  h2 .num{background:var(--primary);color:#fff;width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;flex:none;}
+  .plain{background:var(--primary-light);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .plain b{color:var(--primary);}
+  .formal{background:#f9fafb;border-radius:8px;padding:14px 16px;font-size:.95rem;color:var(--muted);}
+  .formal b{color:var(--text);}
+  .mech{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+  .mech .item{border:1px solid var(--line);border-radius:10px;padding:14px;}
+  .mech .item h3{font-size:1rem;margin-bottom:6px;}
+  .mech .item p{font-size:.9rem;color:var(--muted);}
+  .case{background:var(--green-light);border-left:4px solid var(--green);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .case b{color:var(--green);}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--primary-light);color:var(--primary);}
+  tr:nth-child(even) td{background:#fbfdff;}
+  details{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px;background:#fff;}
+  details summary{cursor:pointer;font-weight:600;color:var(--text);}
+  details[open]{border-color:var(--primary);}
+  details .ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);color:var(--muted);font-size:.93rem;}
+  ol.refs{padding-left:20px;font-size:.9rem;color:var(--muted);}
+  ol.refs li{margin-bottom:6px;}
+  ol.refs a{color:var(--primary);word-break:break-all;}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:32px;}
+  .flow{background:#f9fafb;border-radius:10px;padding:14px 16px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem;overflow-x:auto;color:#374151;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="hero">
+    <span class="tag">概念学习资料 · 一</span>
+    <h1>Agent（智能体）</h1>
+    <p>一句话理解：<b>以大模型为"大脑"，能自主理解目标、拆解任务、调用工具并根据反馈调整行动，直到把事情做完的 AI 系统。</b></p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="../concept-relationship.html">🏠 概念关系图</a> ·
+    <a href="agent.html"><b>Agent</b></a> ·
+    <a href="llm-context.html">大模型的上下文</a> ·
+    <a href="skill.html">Skill</a>
+  </nav>
+
+  <section>
+    <h2><span class="num">1</span>概念定义</h2>
+    <div class="plain"><b>大白话版：</b>普通 AI 聊天机器人像"客服"——你问一句它答一句；而 Agent 像"助理"——你只说要达成什么结果，它自己去想步骤、找工具、干活、检查，最后把成品交给你。</div>
+    <div class="formal"><b>规范定义：</b>Agent（智能体）是一种以大语言模型（LLM）为核心决策单元，能够<b>感知</b>任务环境、<b>自主规划</b>行动步骤、<b>调用外部工具</b>执行操作，并依据执行<b>反馈</b>迭代调整，直至达成给定目标的智能系统。</div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>核心机制</h2>
+    <div class="mech">
+      <div class="item"><h3>🧠 规划（Planning）</h3><p>把"帮我做一份竞品周报"这样的大目标，拆解成"查数据 → 清洗整理 → 找出变化 → 写结论"这样的子任务序列，并决定先做哪个。</p></div>
+      <div class="item"><h3>🔧 工具调用（Tool Use）</h3><p>知道自己"不会"的事情就去找工具：联网搜索、读文件、运行代码、调 API。工具调用让 Agent 突破了纯文本的能力边界。</p></div>
+      <div class="item"><h3>📚 记忆（Memory）</h3><p>短期记忆靠上下文窗口（本次任务内的信息），长期记忆靠外部存储（向量数据库、文件），让它能"记得"之前发生过什么。</p></div>
+      <div class="item"><h3>🔁 反馈循环（Reflection）</h3><p>每做完一步就检查结果：代码报错了就改，搜到的资料不对就换关键词。不是"一次生成定终身"，而是迭代逼近目标。</p></div>
+    </div>
+    <div style="margin-top:14px" class="flow">目标输入 → [ 规划拆解 ] → [ 调用工具执行 ] → [ 检查反馈 ]<br>　                              ↑＿＿＿不满足则回到规划，调整后再执行＿＿＿↓<br>　                                                → 输出最终成果</div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>应用案例（广告学视角）</h2>
+    <div class="case">
+      <b>案例：竞品投放监测周报 Agent</b><br>
+      我给 Agent 一个目标："每周一早上 9 点前，给我一份上一周三个竞品在抖音/小红书的投放内容监测简报。"<br>
+      Agent 自主执行：① 用搜索工具抓取三个品牌账号上周发布的内容；② 提取每条内容的主题、形式（图文/短视频/直播）、互动数据；③ 对比本周与上周的变化，找出投放策略调整的信号；④ 把结论写成简报并在周一早上推送给我。<br>
+      整个过程我只需要下达一次目标、最后验收成品——这正是 Agent 与普通 AI 工具的本质区别：从"我来操作工具"变成"我验收 Agent 的工作"。
+    </div>
+    <div class="case">
+      <b>案例：A/B 测试文案 Agent</b><br>
+      输入产品卖点与目标人群，Agent 自动产出 5 组不同切入角度的信息流广告文案初稿 → 调用投放平台的测试接口小流量试投 → 根据点击率数据淘汰低效版本 → 用表现最好的文案结构裂变出第二批。人只负责把控品牌调性与合规红线。
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>概念辨析：Agent ≠ 聊天机器人</h2>
+    <table>
+      <tr><th>对比维度</th><th>聊天机器人（Chatbot）</th><th>Agent（智能体）</th></tr>
+      <tr><td>交互模式</td><td>被动应答：一问一答，答完即止</td><td>主动执行：接收目标后自主推进多步任务</td></tr>
+      <tr><td>任务长度</td><td>单轮或几轮对话</td><td>可长时间、多步骤运行直至完成</td></tr>
+      <tr><td>工具使用</td><td>一般只能生成文本</td><td>能联网搜索、执行代码、读写文件、调用外部 API</td></tr>
+      <tr><td>纠错能力</td><td>答错了等用户发现</td><td>自我检查反馈，发现错误自动调整重试</td></tr>
+      <tr><td>广告场景类比</td><td>客服机器人回答"运费多少"</td><td>助理替你跑完"调研—产出—复盘"全流程</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span>自测问题（点击展开参考答案）</h2>
+    <details>
+      <summary>Q1：判断一个 AI 产品是不是 Agent，最关键的判断标准是什么？</summary>
+      <div class="ans">看它是否具备<b>自主性</b>：能否在只给定目标（而非逐步指令）的情况下，自己完成"规划—执行—反馈—调整"的闭环。如果每一步都需要人来推动，那它只是对话工具；能自己跑完流程的才是 Agent。</div>
+    </details>
+    <details>
+      <summary>Q2：为什么说"工具调用"是 Agent 的关键能力？没有它 Agent 会怎样？</summary>
+      <div class="ans">没有工具调用，Agent 只能基于训练数据"说"，不能对现实世界"做"——不能查实时数据、不能执行代码、不能操作文件。工具调用把大模型从"知识问答机"升级为"能干活的执行者"，这是 Agent 完成真实任务的物理基础。</div>
+    </details>
+    <details>
+      <summary>Q3：结合广告学专业，举一个"只能用 Agent 而不能用普通 AI 对话"的场景。</summary>
+      <div class="ans">例：每月自动汇总 5 个竞品的全平台投放数据并输出趋势报告。这需要跨周期、多步骤、调用外部数据接口并主动定时执行——普通对话式 AI 每次都要人工重新输入指令、手动喂数据，无法自主完成闭环任务。</div>
+    </details>
+    <details>
+      <summary>Q4：Agent 的"记忆"分哪两种？分别对应什么机制？</summary>
+      <div class="ans">短期记忆 = 上下文窗口（详见本系列第二篇），保存当前任务内的对话与中间结果，任务结束即失；长期记忆 = 外部存储（数据库/文件），跨任务持久保存，需要时检索回来放进上下文使用。</div>
+    </details>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span>参考来源</h2>
+    <ol class="refs">
+      <li>Anthropic，《Building Effective Agents》（2024）— <a href="https://www.anthropic.com/research/building-effective-agents">anthropic.com/research/building-effective-agents</a></li>
+      <li>Lilian Weng（OpenAI），《LLM Powered Autonomous Agents》（2023）— <a href="https://lilianweng.github.io/posts/2023-06-23-agent/">lilianweng.github.io/posts/2023-06-23-agent</a></li>
+      <li>OpenAI 官方文档，Function Calling / Tool Use 说明 — <a href="https://platform.openai.com/docs">platform.openai.com/docs</a></li>
+    </ol>
+  </section>
+
+  <footer>概念学习资料 · 由 concept-learning Skill 生成，经覃宏丽核对修改 · 2026-09</footer>
+</div>
+</body>
+</html>

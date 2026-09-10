@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习资料：大模型的上下文</title>
+<style>
+  :root{
+    --primary:#7c3aed; --primary-light:#f5f3ff; --text:#1f2937;
+    --muted:#6b7280; --line:#e5e7eb; --bg:#f8fafc; --card:#ffffff;
+    --green:#059669; --green-light:#ecfdf5; --amber:#d97706; --amber-light:#fffbeb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.8;}
+  .container{max-width:860px;margin:0 auto;padding:24px 16px 64px;}
+  header.hero{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border-radius:16px;padding:32px 24px;margin-bottom:24px;}
+  header.hero .tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 14px;font-size:.85rem;margin-bottom:12px;}
+  header.hero h1{font-size:1.9rem;margin-bottom:8px;}
+  header.hero p{opacity:.92;}
+  nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:20px;}
+  nav.breadcrumb a{color:var(--primary);text-decoration:none;}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px;}
+  h2{font-size:1.25rem;color:var(--primary);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  h2 .num{background:var(--primary);color:#fff;width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;flex:none;}
+  .plain{background:var(--primary-light);border-left:4px solid var(--primary);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .plain b{color:var(--primary);}
+  .formal{background:#f9fafb;border-radius:8px;padding:14px 16px;font-size:.95rem;color:var(--muted);}
+  .formal b{color:var(--text);}
+  .mech{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+  .mech .item{border:1px solid var(--line);border-radius:10px;padding:14px;}
+  .mech .item h3{font-size:1rem;margin-bottom:6px;}
+  .mech .item p{font-size:.9rem;color:var(--muted);}
+  .case{background:var(--green-light);border-left:4px solid var(--green);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .case b{color:var(--green);}
+  .warn{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:8px;padding:14px 16px;margin-bottom:12px;font-size:.93rem;}
+  .warn b{color:var(--amber);}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:var(--primary-light);color:var(--primary);}
+  tr:nth-child(even) td{background:#fbfaff;}
+  details{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px;background:#fff;}
+  details summary{cursor:pointer;font-weight:600;}
+  details[open]{border-color:var(--primary);}
+  details .ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);color:var(--muted);font-size:.93rem;}
+  ol.refs{padding-left:20px;font-size:.9rem;color:var(--muted);}
+  ol.refs li{margin-bottom:6px;}
+  ol.refs a{color:var(--primary);word-break:break-all;}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:32px;}
+  .bar{background:#f3f4f6;border-radius:8px;overflow:hidden;margin:6px 0 14px;}
+  .bar .fill{height:22px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:.75rem;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="hero">
+    <span class="tag">概念学习资料 · 二</span>
+    <h1>大模型的上下文（Context）</h1>
+    <p>一句话理解：<b>模型一次回答时能"看到"的全部信息及其容量上限，相当于它的"工作记忆"——窗口就这么大，塞满了旧的就记不住新的。</b></p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="../concept-relationship.html">🏠 概念关系图</a> ·
+    <a href="agent.html">Agent</a> ·
+    <a href="llm-context.html"><b>大模型的上下文</b></a> ·
+    <a href="skill.html">Skill</a>
+  </nav>
+
+  <section>
+    <h2><span class="num">1</span>概念定义</h2>
+    <div class="plain"><b>大白话版：</b>把大模型想象成一个每次考试都"失忆"的学霸：不管多聪明，它只能看着<b>这次考卷上写了什么</b>来答题。这张"考卷"就是上下文——你发的消息、之前聊过的内容、喂给它的资料，全都算；而考卷的页数是有上限的，这个上限叫"上下文窗口"。</div>
+    <div class="formal"><b>规范定义：</b>上下文（Context）指大模型在进行一次推理（生成回答）时，作为输入条件提供给模型的全部 token 序列，包括系统提示词、历史对话、检索到的资料与当前提问；<b>上下文窗口（Context Window）</b>是模型单次推理所能处理的最大 token 数量。窗口内的信息模型都能"注意到"，超出窗口的信息则完全不可见。</div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>核心机制</h2>
+    <div class="mech">
+      <div class="item"><h3>✂️ Token：计量的单位</h3><p>模型不按"字"也不按"词"读文本，而是按 token（词元）切分。经验值：中文 1 个汉字 ≈ 1~2 个 token，英文 1 个单词 ≈ 1.3 个 token。窗口大小、API 计费都以 token 计。</p></div>
+      <div class="item"><h3>🪟 窗口：有限的注意力</h3><p>主流模型窗口从 8K 到 200K 甚至 1M token 不等。1 个 token≈0.75 个英文单词，100K token 大约相当于一本 15 万字的中文书。窗口越大，一次能"带着读"的资料越多。</p></div>
+      <div class="item"><h3>👀 注意力：不是雨露均沾</h3><p>窗口内的信息也并非被同等对待。研究发现模型对开头和结尾的内容最敏感，中间部分容易被忽略，即"Lost in the Middle"现象——重要内容要放在两头。</p></div>
+      <div class="item"><h3>🧩 上下文内学习</h3><p>不改模型参数、不重新训练，只在上下文里放几个示例（few-shot），模型就能模仿格式和风格完成任务。"现学现卖"全靠上下文。</p></div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="font-size:.9rem;color:var(--muted)">一次对话中上下文的占用示意（窗口 128K）：</div>
+      <div class="bar"><div class="fill" style="width:8%">系统提示 3%</div></div>
+      <div class="bar"><div class="fill" style="width:30%;background:linear-gradient(90deg,#2563eb,#60a5fa)">上传的品牌资料 24%</div></div>
+      <div class="bar"><div class="fill" style="width:20%;background:linear-gradient(90deg,#059669,#34d399)">历史对话 16%</div></div>
+      <div class="bar"><div class="fill" style="width:10%;background:linear-gradient(90deg,#d97706,#fbbf24)">当前提问 8%</div></div>
+      <div style="font-size:.85rem;color:var(--muted)">剩余 ≈49% 留给模型生成回答；对话越长、资料越多，剩余空间越小，早期内容可能被挤出窗口。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>应用案例（广告学视角）</h2>
+    <div class="case">
+      <b>案例：把"品牌手册"装进上下文写文案</b><br>
+      为某茶饮品牌写小红书种草文案时，把品牌手册（品牌故事、slogan、禁用词、目标人群画像、过往爆款笔记）共约 2 万字全部放进上下文，再下达指令。模型写出的文案会自动对齐品牌调性、避开禁用词、延续爆款句式——这些"知识"全部来自<b>上下文</b>而非模型训练记忆。
+    </div>
+    <div class="case">
+      <b>案例：长文档Brief 一键拆解</b><br>
+      客户发来 60 页的年度营销 Brief（约 8 万 token）。长上下文模型可以一次性读完全文，直接输出"目标人群、核心诉求、预算分配、KPI、时间节点"五张摘要卡。若用小窗口模型，只能分段投喂，模型看不到全局，拆解质量明显下降。
+    </div>
+    <div class="warn">
+      <b>踩坑提醒：</b>"新开一个对话"意味着上下文清零——上个对话里喂过的资料、聊过的结论，新对话里模型一概不知。跨对话想让 AI"记得你"，靠的是产品的长期记忆功能（把摘要存下来、下次自动注入上下文），而不是模型自己记住。
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>概念辨析：三个容易混淆的"记忆"</h2>
+    <table>
+      <tr><th>对比维度</th><th>训练知识（参数记忆）</th><th>上下文（工作记忆）</th><th>长期记忆（外部存储）</th></tr>
+      <tr><td>存哪</td><td>模型参数内部，训练时固化</td><td>当前这次推理的输入窗口</td><td>模型外的数据库/文件</td></tr>
+      <tr><td>能改吗</td><td>不能（除非重新训练/微调）</td><td>能，随每次对话动态变化</td><td>能，随时增删</td></tr>
+      <tr><td>时效性</td><td>止于训练截止日</td><td>完全实时</td><td>取决于写入的内容</td></tr>
+      <tr><td>跨对话</td><td>天然跨对话</td><td>不跨，对话结束即消失</td><td>跨，需检索后再注入上下文</td></tr>
+      <tr><td>广告类比</td><td>文案老手的"功力"</td><td>摆在桌上的那份 Brief</td><td>档案柜里的客户资料</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span>自测问题（点击展开参考答案）</h2>
+    <details>
+      <summary>Q1：为什么 AI 经常"聊着聊着就忘了"前面说过的内容？</summary>
+      <div class="ans">因为对话历史也是上下文的一部分，会不断累积占用窗口。当总 token 数逼近窗口上限时，较早的内容会被截断或压缩出窗，模型自然"失忆"。解决办法：开新对话并重新提供关键信息，或主动让模型先输出一份摘要供后续使用。</div>
+    </details>
+    <details>
+      <summary>Q2：上下文窗口 128K 的"K"是什么单位？大概能装多少内容？</summary>
+      <div class="ans">K = 1024。128K ≈ 13 万 token；对中文而言大约相当于 6~10 万汉字（1 汉字 ≈ 1~2 token），约等于一本中等厚度的书。</div>
+    </details>
+    <details>
+      <summary>Q3：给模型喂一份长资料时，最关键的信息应该放在开头还是中间？为什么？</summary>
+      <div class="ans">放在开头或结尾，避免中间。根据《Lost in the Middle》论文的实验，模型对序列首尾位置信息的利用率显著高于中部——同样一份品牌手册，把核心卖点放在最前面，模型遵循得最好。</div>
+    </details>
+    <details>
+      <summary>Q4：模型知道了"昨天刚发布的明星代言新闻"，这是通过上下文还是训练知识实现的？</summary>
+      <div class="ans">上下文。训练知识止于模型训练截止日期，不可能包含"昨天"的信息；一定是 Agent 通过联网搜索工具把新闻抓回来、放进上下文，模型才"知道"。这也是工具调用与上下文配合的典型场景。</div>
+    </details>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span>参考来源</h2>
+    <ol class="refs">
+      <li>Liu, N. F. et al. 《Lost in the Middle: How Language Models Use Long Contexts》（2023）— <a href="https://arxiv.org/abs/2307.03172">arxiv.org/abs/2307.03172</a></li>
+      <li>Anthropic，关于长上下文与 prompt 结构的官方工程文档 — <a href="https://docs.anthropic.com">docs.anthropic.com</a></li>
+      <li>OpenAI，《Tokenizer 工具与 token 计数说明》— <a href="https://platform.openai.com/tokenizer">platform.openai.com/tokenizer</a></li>
+    </ol>
+  </section>
+
+  <footer>概念学习资料 · 由 concept-learning Skill 生成，经覃宏丽核对修改 · 2026-09</footer>
+</div>
+</body>
+</html>
