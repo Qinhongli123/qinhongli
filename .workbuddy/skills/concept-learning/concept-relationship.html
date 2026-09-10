@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念关系图：Agent × 上下文 × Skill</title>
+<style>
+  :root{
+    --text:#1f2937; --muted:#6b7280; --line:#e5e7eb; --bg:#f8fafc; --card:#ffffff;
+    --blue:#2563eb; --purple:#7c3aed; --green:#059669;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.8;}
+  .container{max-width:900px;margin:0 auto;padding:24px 16px 64px;}
+  header.hero{background:linear-gradient(135deg,#1e3a8a,#2563eb,#7c3aed);color:#fff;border-radius:16px;padding:36px 24px;margin-bottom:24px;text-align:center;}
+  header.hero .tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 14px;font-size:.85rem;margin-bottom:12px;}
+  header.hero h1{font-size:1.8rem;margin-bottom:8px;}
+  header.hero p{opacity:.92;}
+  nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:20px;text-align:center;}
+  nav.breadcrumb a{color:var(--blue);text-decoration:none;}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px;}
+  h2{font-size:1.25rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .card{border-radius:12px;padding:18px;color:#fff;}
+  .card h3{font-size:1.05rem;margin-bottom:6px;}
+  .card p{font-size:.9rem;opacity:.95;}
+  .card.blue{background:linear-gradient(135deg,#2563eb,#1e40af);}
+  .card.purple{background:linear-gradient(135deg,#7c3aed,#5b21b6);}
+  .card.green{background:linear-gradient(135deg,#059669,#047857);}
+  .diagram{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;overflow-x:auto;}
+  .diagram svg{display:block;margin:0 auto;min-width:720px;width:100%;height:auto;}
+  .analogy{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+  .analogy .item{border:1px solid var(--line);border-radius:10px;padding:16px;}
+  .analogy .item .role{display:inline-block;font-size:.8rem;color:#fff;border-radius:6px;padding:1px 10px;margin-bottom:8px;}
+  .analogy .item h3{font-size:1rem;margin-bottom:4px;}
+  .analogy .item p{font-size:.9rem;color:var(--muted);}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:#eff6ff;color:#1e40af;}
+  tr:nth-child(even) td{background:#fbfdff;}
+  .story{background:#fffbeb;border-left:4px solid #d97706;border-radius:8px;padding:16px 18px;font-size:.95rem;}
+  .story b{color:#b45309;}
+  .story .step{display:inline-block;background:#fff;border:1px solid #fcd34d;border-radius:6px;padding:0 8px;margin:2px 2px;font-size:.82rem;color:#92400e;}
+  .keyline{background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-radius:12px;padding:18px 20px;text-align:center;font-size:1.02rem;}
+  .keyline b.blue{color:var(--blue);} .keyline b.purple{color:var(--purple);} .keyline b.green{color:var(--green);}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:32px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="hero">
+    <span class="tag">概念关系 · 个人理解</span>
+    <h1>Agent × 大模型上下文 × Skill</h1>
+    <p>三个概念如何配合，让 AI 从"会说话"变成"会做事"</p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="concept-relationship.html"><b>🏠 概念关系图</b></a> ·
+    <a href="training-materials/agent.html">Agent</a> ·
+    <a href="training-materials/llm-context.html">大模型的上下文</a> ·
+    <a href="training-materials/skill.html">Skill</a>
+  </nav>
+
+  <section>
+    <h2>一、三个概念的一句话回顾</h2>
+    <div class="cards">
+      <div class="card blue"><h3>🤖 Agent（智能体）</h3><p>回答"谁来做"——以大模型为大脑、自主规划并调用工具完成目标的执行者。</p></div>
+      <div class="card purple"><h3>🪟 大模型上下文</h3><p>回答"它此刻知道什么"——一次推理中模型能看到的全部信息，容量有限的"工作记忆"。</p></div>
+      <div class="card green"><h3>📦 Skill（技能包）</h3><p>回答"它会哪些本事"——用结构化文件描述、按需加载的成套能力与方法。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>二、关系图：一次任务的完整旅程</h2>
+    <div class="diagram">
+      <svg viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+          </marker>
+        </defs>
+
+        <!-- 用户目标 -->
+        <rect x="20" y="150" width="130" height="70" rx="12" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="85" y="180" text-anchor="middle" font-size="15" fill="#334155" font-weight="bold">用户</text>
+        <text x="85" y="202" text-anchor="middle" font-size="13" fill="#64748b">下达目标</text>
+
+        <!-- 目标 -> Agent -->
+        <line x1="150" y1="185" x2="235" y2="185" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="192" y="172" text-anchor="middle" font-size="11" fill="#64748b">目标 + 资料进入</text>
+
+        <!-- Agent 主体 -->
+        <circle cx="360" cy="185" r="88" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+        <text x="360" y="150" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e40af">Agent</text>
+        <text x="360" y="176" text-anchor="middle" font-size="12" fill="#3b82f6">大脑：LLM 推理</text>
+        <text x="360" y="198" text-anchor="middle" font-size="12" fill="#3b82f6">规划 → 执行 → 反馈</text>
+        <text x="360" y="220" text-anchor="middle" font-size="11" fill="#93c5fd">"谁来做事"</text>
+
+        <!-- 上下文（Agent 下方） -->
+        <rect x="235" y="315" width="250" height="78" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+        <text x="360" y="342" text-anchor="middle" font-size="15" font-weight="bold" fill="#5b21b6">上下文（工作记忆）</text>
+        <text x="360" y="364" text-anchor="middle" font-size="11.5" fill="#8b5cf6">系统提示 · 历史对话 · 上传资料</text>
+        <text x="360" y="382" text-anchor="middle" font-size="11.5" fill="#8b5cf6">"此刻知道什么"（容量有限）</text>
+
+        <!-- Agent <-> 上下文 -->
+        <line x1="360" y1="273" x2="360" y2="313" stroke="#7c3aed" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+        <text x="418" y="298" font-size="11" fill="#7c3aed">每一步推理都读/写</text>
+
+        <!-- Skill（Agent 右侧） -->
+        <rect x="560" y="60" width="170" height="96" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+        <text x="645" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#047857">Skill 技能包</text>
+        <text x="645" y="112" text-anchor="middle" font-size="11.5" fill="#10b981">SKILL.md（声明式描述）</text>
+        <text x="645" y="130" text-anchor="middle" font-size="11.5" fill="#10b981">成套方法 · 流程 · 示例</text>
+        <text x="645" y="148" text-anchor="middle" font-size="11" fill="#6ee7b7">"会哪些本事"</text>
+
+        <!-- Agent -> Skill -->
+        <path d="M 435 135 Q 510 95 558 105" fill="none" stroke="#059669" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="500" y="85" text-anchor="middle" font-size="11" fill="#059669">命中场景时</text>
+        <text x="500" y="100" text-anchor="middle" font-size="11" fill="#059669">按需加载</text>
+
+        <!-- Skill -> 上下文（注入） -->
+        <path d="M 600 158 Q 520 250 490 312" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+        <text x="560" y="250" font-size="11" fill="#7c3aed">SKILL.md 内容</text>
+        <text x="560" y="265" font-size="11" fill="#7c3aed">注入上下文</text>
+
+        <!-- 工具 -->
+        <rect x="560" y="300" width="170" height="76" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.8"/>
+        <text x="645" y="328" text-anchor="middle" font-size="15" font-weight="bold" fill="#475569">外部工具</text>
+        <text x="645" y="350" text-anchor="middle" font-size="11.5" fill="#94a3b8">搜索 · 代码 · 文件 · API</text>
+        <text x="645" y="368" text-anchor="middle" font-size="11" fill="#cbd5e1">"具体的手脚"</text>
+
+        <!-- Agent <-> 工具 -->
+        <line x1="450" y1="225" x2="558" y2="320" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="522" y="262" font-size="11" fill="#64748b">调用</text>
+
+        <!-- 产出 -->
+        <rect x="770" y="150" width="75" height="70" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+        <text x="807" y="180" text-anchor="middle" font-size="14" font-weight="bold" fill="#b45309">任务</text>
+        <text x="807" y="200" text-anchor="middle" font-size="14" font-weight="bold" fill="#b45309">完成</text>
+
+        <!-- Agent -> 产出 -->
+        <line x1="448" y1="185" x2="768" y2="185" stroke="#d97706" stroke-width="2" stroke-dasharray="2 0" marker-end="url(#arrow)"/>
+        <text x="608" y="175" text-anchor="middle" font-size="11" fill="#d97706">反复迭代后交付成果</text>
+        <text x="608" y="205" text-anchor="middle" font-size="11" fill="#94a3b8">（虚线穿过 Skill 与工具区，示意多轮组合）</text>
+      </svg>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:12px">读图要点：① 用户只给<b>目标</b>，中间过程由 Agent 自主完成；② Agent 每一步推理都离不开<b>上下文</b>（读出已知信息、写入中间结果）；③ <b>Skill</b> 平时不占地方，命中场景才把"成套方法"注入上下文；④ Skill 中描述的流程还会指挥 Agent 去调用<b>外部工具</b>。</p>
+  </section>
+
+  <section>
+    <h2>三、我的类比理解：一个广告公司里的策划总监</h2>
+    <p style="margin-bottom:14px;font-size:.95rem">作为广告学学生，我把这三个概念类比成<b>一位广告公司的策划总监</b>接下一个 brief 的全过程：</p>
+    <div class="analogy">
+      <div class="item">
+        <span class="role" style="background:#2563eb">执行者</span>
+        <h3>Agent = 策划总监</h3>
+        <p>接到客户 brief 后不等人催，自己拆解任务（先调研、再定位、后创意）、安排执行、检查质量、迭代修改，最终交出完整方案。他不是"答一句算一句"的客服，而是<b>对最终交付负责的人</b>。</p>
+      </div>
+      <div class="item">
+        <span class="role" style="background:#7c3aed">工作记忆</span>
+        <h3>上下文 = 他此刻的办公桌面</h3>
+        <p>桌面上摊开着 brief、调研数据、品牌手册、和客户的聊天记录——他<b>此刻能参考的一切</b>。桌面面积有限（窗口上限）：摊不下就撤走旧的；下班清桌（新开对话），第二天他不会记得昨天摊开过什么。</p>
+      </div>
+      <div class="item">
+        <span class="role" style="background:#059669">方法论</span>
+        <h3>Skill = 他熟练掌握的 SOP 手册</h3>
+        <p>公司沉淀的《竞品分析方法论》《提案 PPT 规范》《舆情监测流程》。平时锁在文件柜里<b>不占桌面</b>（不占上下文）；接到对应任务时抽出来放在桌面上照着执行（按需加载）——手册还会告诉他该用哪些软件和数据库（调用工具）。</p>
+      </div>
+    </div>
+    <div class="keyline" style="margin-top:16px">
+      一句话总结：<b class="blue">Agent</b> 是做事的人，<b class="purple">上下文</b> 是他此刻眼前的资料，<b class="green">Skill</b> 是他抽屉里的成套方法——<b>人 + 桌面 + 手册</b>，缺一样都干不好活。
+    </div>
+  </section>
+
+  <section>
+    <h2>四、综合案例：一个任务同时用到三者</h2>
+    <div class="story">
+      <b>任务："帮我为新品咖啡做一个上市传播方案。"</b><br><br>
+      <span class="step">① 目标进入</span> 用户把目标（可能还有品牌资料）发给 Agent——这些内容<b>进入上下文</b>，成为 Agent 眼前的"桌面资料"。<br><br>
+      <span class="step">② Agent 规划</span> Agent（策划总监）拆解任务：市场调研 → 竞品分析 → 人群洞察 → 传播策略 → 渠道规划 → 预算分配。每一步的中间结论都会<b>写回上下文</b>，供后续步骤参考。<br><br>
+      <span class="step">③ 命中 Skill</span> 当进行到"竞品分析"时，平台发现已安装<b>「竞品分析方法论 Skill」</b>适用，自动把该 Skill 的 SKILL.md <b>注入上下文</b>——Agent 瞬间"学会"了标准分析框架，不用用户现场教。<br><br>
+      <span class="step">④ 调用工具</span> 按 Skill 的指引，Agent 依次<b>调用搜索工具</b>抓取竞品近 30 天的社媒声量、<b>调用表格工具</b>整理数据、<b>调用代码工具</b>画趋势图——每一步的执行结果同样回填上下文。<br><br>
+      <span class="step">⑤ 反馈迭代</span> Agent 检查产出：发现某个渠道的数据缺了两天，自动回到第④步重新抓取补齐（<b>反馈循环</b>）。<br><br>
+      <span class="step">⑥ 交付成果</span> 最终输出完整传播方案。若对话继续，上下文持续累积；一旦用户<b>新开对话</b>，桌面清空——想延续，就靠长期记忆功能把摘要"重新摊回桌面"。
+    </div>
+  </section>
+
+  <section>
+    <h2>五、三个常见误区澄清</h2>
+    <table>
+      <tr><th>误区</th><th>澄清</th></tr>
+      <tr><td>"上下文窗口大 = AI 记性好，能永远记住我"</td><td>窗口再大也只是<b>这一次任务</b>的工作记忆；跨对话的"记住"靠外部长期记忆机制，与窗口大小无关。</td></tr>
+      <tr><td>"装了 Skill，Agent 就变聪明了"</td><td>Skill 不改变模型智力，它提供的是<b>成套的方法与流程</b>——让同样的聪明用在正确的轨道上，产出更稳定。</td></tr>
+      <tr><td>"Skill 就是提前写好的提示词"</td><td>提示词是"每次手动贴的便签"；Skill 由平台<b>自动识别场景、按需加载</b>，还能包含流程、自检清单与附属资源，是"制度"而非"便签"。</td></tr>
+    </table>
+  </section>
+
+  <footer>概念关系 · 覃宏丽的个人理解与整理 · 2026-09 · 配套资料见 training-materials/ 目录</footer>
+</div>
+</body>
+</html>
